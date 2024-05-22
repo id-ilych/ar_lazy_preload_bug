@@ -46,3 +46,5 @@ group :test do
   gem "selenium-webdriver"
 
 end
+
+gem "ar_lazy_preload", "~> 2.1"
