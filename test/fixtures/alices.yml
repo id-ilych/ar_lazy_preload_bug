@@ -1,7 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  alice: 1
+# one:
+#   alice: 1
 
-two:
-  alice: 1
+# two:
+#   alice: 1

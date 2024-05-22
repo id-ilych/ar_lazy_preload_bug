@@ -1,9 +1,9 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  bob: 1
-  alice: one
+# one:
+#   bob: 1
+#   alice: one
 
-two:
-  bob: 1
-  alice: two
+# two:
+#   bob: 1
+#   alice: two
