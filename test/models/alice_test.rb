@@ -1,7 +1,7 @@
 require "test_helper"
 
 class AliceTest < ActiveSupport::TestCase
-  test "one" do
+  def template
     alice = Alice.create(alice: 1)
     bob = Bob.create(bob: 2, alice:)
     charlie = Charlie.create(charlie: 3, bob:)
@@ -10,28 +10,34 @@ class AliceTest < ActiveSupport::TestCase
     assert record.lazy_preload_context.present?, "lazy context is missing for alice"
 
     assert_equal loaded_associations(record), [], "some associations are preloaded"
-    assert_equal record.charlie.charlie, 3, "unexpected charlie value"
+
+    yield record
+
     assert_equal loaded_associations(record), %w[bob charlie], "unexpected associations preloaded"
 
     assert record.charlie.lazy_preload_context.present?, "lazy context is missing for charlie"
     assert record.bob.lazy_preload_context.present?, "lazy context is missing for bob"
+
   end
 
-  test "two" do
-    alice = Alice.create(alice: 1)
-    bob = Bob.create(bob: 2, alice:)
-    charlie = Charlie.create(charlie: 3, bob:)
+  test "explicitly fetch only charlie" do
+    template do |alice|
+      assert_equal alice.charlie.charlie, 3, "unexpected charlie value"
+    end
+  end
 
-    record = Alice.preload_associations_lazily.find(alice.id)
-    assert record.lazy_preload_context.present?, "lazy context is missing for alice"
+  test "fetch charlie and then bob" do
+    template do |alice|
+      assert_equal alice.charlie.charlie, 3, "unexpected charlie value"
+      assert_equal alice.bob.bob, 2, "unexpected bob value"
+    end
+  end
 
-    assert_equal loaded_associations(record), [], "some associations are preloaded"
-    assert_equal record.bob.bob, 2, "unexpected bob value"
-    assert_equal record.charlie.charlie, 3, "unexpected charlie value"
-    assert_equal loaded_associations(record), %w[bob charlie], "unexpected associations preloaded"
-
-    assert record.charlie.lazy_preload_context.present?, "lazy context is missing for charlie"
-    assert record.bob.lazy_preload_context.present?, "lazy context is missing for bob"
+  test "fetch bob and then charlie" do
+    template do |alice|
+      assert_equal alice.bob.bob, 2, "unexpected bob value"
+      assert_equal alice.charlie.charlie, 3, "unexpected charlie value"
+    end
   end
 
   def loaded_associations(record)
